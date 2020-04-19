@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "mes.user-api",
+      "type": "java.lang.String",
+      "description": "Description for mes.user-api."
+  }
+] }

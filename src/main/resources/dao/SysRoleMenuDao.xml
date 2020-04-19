@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.touchspring.smartforecasting.dao.SysRoleMenuDao">
+  <resultMap id="BaseResultMap" type="com.touchspring.smartforecasting.domain.entity.sys.SysRoleMenu">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="menu_id" jdbcType="VARCHAR" property="menuId" />
+    <result column="role_id" jdbcType="VARCHAR" property="roleId" />
+
+    <association property="menu" javaType="com.touchspring.smartforecasting.domain.entity.sys.SysMenu">
+      <id column="menu_id" property="id" />
+      <result column="menu_create_at" property="createAt" />
+      <result column="menu_update_at" property="updateAt" />
+      <!--    <result column="create_user_id" jdbcType="VARCHAR" property="createUserId" />-->
+      <!--    <result column="update_user_id" jdbcType="VARCHAR" property="updateUserId" />-->
+      <result column="menu_name" property="name" />
+      <result column="menu_application_id" property="applicationId" />
+      <result column="menu_parent_id" property="parentId" />
+      <result column="menu_path" property="path" />
+      <result column="menu_icon" property="icon" />
+      <result column="menu_is_deleted" property="isDeleted" />
+      <result column="menu_sort" property="sort" />
+      <result column="menu_is_active" property="isActive" />
+      <result column="menu_type" property="type" />
+      <result column="menu_code" property="code" />
+      <!--    子菜单-->
+      <collection property="children"
+                  ofType="com.touchspring.smartforecasting.domain.entity.sys.SysMenu">
+        <id column="children_id" property="id" />
+        <result column="children_create_at" property="createAt" />
+        <result column="children_update_at" property="updateAt" />
+        <!--    <result column="create_user_id" jdbcType="VARCHAR" property="createUserId" />-->
+        <!--    <result column="update_user_id" jdbcType="VARCHAR" property="updateUserId" />-->
+        <result column="children_name" property="name" />
+        <result column="children_application_id" property="applicationId" />
+        <result column="children_parent_id" property="parentId" />
+        <result column="children_path" property="path" />
+        <result column="children_icon" property="icon" />
+        <result column="children_is_deleted" property="isDeleted" />
+        <result column="children_sort" property="sort" />
+        <result column="children_is_active" property="isActive" />
+        <result column="children_type" property="type" />
+        <result column="children_code" property="code" />
+
+      </collection>
+    </association>
+    <association property="role" javaType="com.touchspring.smartforecasting.domain.entity.sys.SysRole">
+      <id column="role_id" property="id" />
+      <result column="role_create_at" property="createAt" />
+      <result column="role_update_at" jdbcType="TIMESTAMP" property="updateAt" />
+      <!--    <result column="create_user_id" jdbcType="VARCHAR" property="createUserId" />-->
+      <!--    <result column="update_user_id" jdbcType="VARCHAR" property="updateUserId" />-->
+      <result column="role_name" property="name" />
+      <result column="role_is_deleted" property="isDeleted" />
+      <result column="role_description" property="description" />
+      <result column="role_is_active" property="isActive" />
+    </association>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, menu_id, role_id
+  </sql>
+
+  <sql id="Column_List">
+    rm.id as id,
+    rm.menu_id as menu_id,
+    rm.role_id as role_id,
+    m.id as menu_id,
+    m.create_at as menu_create_at,
+    m.update_at as menu_update_at,
+    m.create_user_id as menu_create_user_id,
+    m.update_user_id as menu_update_user_id,
+    m.name as menu_name,
+    m.application_id as menu_application_id,
+    m.parent_id as menu_parent_id,
+    m.path as menu_path,
+    m.icon as menu_icon,
+    m.is_deleted as menu_is_deleted,
+    m.sort as menu_sort,
+    m.is_active as menu_is_active,
+    m.type as menu_type,
+    m.code as menu_code,
+    ch.id as children_id,
+    ch.create_at as children_create_at,
+    ch.update_at as children_update_at,
+    ch.create_user_id as children_create_user_id,
+    ch.update_user_id as children_update_user_id,
+    ch.name as children_name,
+    ch.application_id as children_application_id,
+    ch.parent_id as children_parent_id,
+    ch.path as children_path,
+    ch.icon as children_icon,
+    ch.is_deleted as children_is_deleted,
+    ch.sort as children_sort,
+    ch.is_active as children_is_active,
+    ch.type as children_type,
+    ch.code as children_code,
+    r.id as role_id,
+    r.create_at as role_create_at,
+    r.update_at as role_update_at,
+    r.create_user_id as role_create_user_id,
+    r.update_user_id as role_update_user_id,
+    r.name as role_name,
+    r.is_deleted as role_is_deleted,
+    r.description as role_description,
+    r.is_active as role_is_active
+  </sql>
+  <select id="findById" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Column_List" />
+    from sys_role_menu rm
+    left join sys_role r on rm.role_id = r.id
+    left join sys_menu m on rm.menu_id = m.id
+    left join sys_menu ch on m.id = ch.parent_id
+    where rm.id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <select id="findByRoleId" resultMap="BaseResultMap">
+    select
+    <include refid="Column_List" />
+    from sys_role_menu rm
+    left join sys_role r on rm.role_id = r.id
+    left join sys_menu m on rm.menu_id = m.id
+    left join sys_menu ch on m.id = ch.parent_id
+    where rm.role_id = #{roleId}
+  </select>
+
+  <select id="findByRoleIdIn" resultMap="BaseResultMap">
+    select
+    <include refid="Column_List" />
+    from sys_role_menu rm
+    left join sys_role r on rm.role_id = r.id
+    left join sys_menu m on rm.menu_id = m.id
+    left join sys_menu ch on m.id = ch.parent_id
+    where rm.role_id  in
+    <foreach item="id" collection="list" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+  </select>
+
+  <delete id="deleteById" parameterType="java.lang.String">
+    delete from sys_role_menu
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <delete id="deleteByRoleId" parameterType="java.lang.String">
+    delete from sys_role_menu
+    where role_id = #{roleId}
+  </delete>
+
+  <delete id="deleteByMenuId" parameterType="java.lang.String">
+    delete from sys_role_menu
+    where menu_id = #{menuId}
+  </delete>
+
+  <insert id="insert" keyColumn="id" keyProperty="id"
+          parameterType="com.touchspring.smartforecasting.domain.entity.sys.SysRoleMenu" >
+    insert into sys_role_menu
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="menuId != null">
+        menu_id,
+      </if>
+      <if test="roleId != null">
+        role_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id},
+      </if>
+      <if test="menuId != null">
+        #{menuId,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null">
+        #{roleId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <insert id="insertALL" parameterType="java.util.List">
+    INSERT ALL
+    <foreach collection="list" item="item" index="index">
+      insert into sys_role_menu
+      <trim prefix="(" suffix=")" suffixOverrides=",">
+        <if test="item.id != null">
+          id,
+        </if>
+        <if test="item.menuId != null">
+          menu_id,
+        </if>
+        <if test="item.roleId != null">
+          role_id,
+        </if>
+      </trim>
+      <trim prefix="values (" suffix=")" suffixOverrides=",">
+        <if test="item.id != null">
+          #{item.id},
+        </if>
+        <if test="item.menuId != null">
+          #{item.menuId},
+        </if>
+        <if test="item.roleId != null">
+          #{item.roleId},
+        </if>
+      </trim>
+    </foreach>
+    SELECT 1 FROM DUAL
+  </insert>
+
+  <update id="update" parameterType="com.touchspring.smartforecasting.domain.entity.sys.SysRoleMenu">
+    update sys_role_menu
+    <set>
+      <if test="menuId != null">
+        menu_id = #{menuId},
+      </if>
+      <if test="roleId != null">
+        role_id = #{roleId},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateALL" parameterType="java.util.List">
+    <foreach collection="list" item="item" index="index" open="begin" close=";end;" separator=";">
+      update sys_role_menu
+      <set>
+        <if test="item.menuId != null">
+          menu_id = #{item.menuId},
+        </if>
+        <if test="item.roleId != null">
+          role_id = #{item.roleId},
+        </if>
+      </set>
+      where id = #{item.id,jdbcType=VARCHAR}
+    </foreach>
+  </update>
+
+</mapper>

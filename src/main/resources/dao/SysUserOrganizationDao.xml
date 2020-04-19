@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.touchspring.smartforecasting.dao.SysUserOrganizationDao">
+  <resultMap id="BaseResultMap" type="com.touchspring.smartforecasting.domain.entity.sys.SysUserOrganization">
+    <id column="id" property="id" />
+    <result column="sys_user_id" property="sysUserId" />
+    <result column="organization_id" property="organizationId" />
+
+    <association property="user" javaType="com.touchspring.smartforecasting.domain.entity.sys.SysUser">
+      <id column="user_id" property="id" />
+      <result column="user_login_name" property="loginName" />
+      <result column="user_user_name" property="userName" />
+      <result column="user_create_at" property="createAt" />
+      <result column="user_update_at" property="updateAt" />
+      <result column="user_is_active" property="isActive" />
+      <result column="user_is_deleted" property="isDeleted" />
+      <result column="user_email" property="email" />
+      <result column="user_language" property="language" />
+      <result column="user_password" property="password" />
+      <result column="user_user_no" property="userNo" />
+      <result column="user_sex" property="sex" />
+    </association>
+
+    <association property="organization" javaType="com.touchspring.smartforecasting.domain.entity.sys.SysOrganization">
+      <id column="organization_id" property="id" />
+      <result column="organization_create_at" property="createAt" />
+      <result column="organization_update_at" property="updateAt" />
+      <result column="organization_name" property="name" />
+      <result column="organization_is_deleted" property="isDeleted" />
+      <result column="organization_parent_id" property="parentId" />
+      <result column="organization_code" property="code" />
+      <result column="organization_path" property="path" />
+    </association>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, sys_user_id, organization_id
+  </sql>
+
+  <sql id="Column_List">
+    uo.id as id,
+    uo.sys_user_id as sys_user_id,
+    uo.organization_id as organization_id,
+    u.id as user_id,
+    u.login_name as user_login_name,
+    u.user_name as user_user_name,
+    u.create_at as user_create_at,
+    u.update_at as user_update_at,
+    u.is_active as user_is_active,
+    u.is_deleted as user_is_deleted,
+    u.email as user_email,
+    u.language as user_language,
+    u.password as user_password,
+    u.user_no as user_user_no,
+    u.sex as user_sex,
+    o.id as organization_id,
+    o.create_at as organization_create_at,
+    o.update_at as organization_update_at,
+    o.name as organization_name,
+    o.is_deleted as organization_is_deleted,
+    o.parent_id as organization_parent_id,
+    o.code as organization_code,
+    o.path as organization_path
+  </sql>
+
+  <select id="findById" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Column_List" />
+    from sys_user_organization uo
+    left join sys_user u on uo.sys_user_id = u.id
+    left join sys_organization o on uo.organization_id = o.id
+    where uo.id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <select id="findBySysUserId" resultMap="BaseResultMap">
+    select
+    <include refid="Column_List" />
+    from sys_user_organization uo
+    left join sys_user u on uo.sys_user_id = u.id
+    left join sys_organization o on uo.organization_id = o.id
+    where uo.sys_user_id = #{sysUserId,jdbcType=VARCHAR}
+  </select>
+    <select id="selectPage" resultMap="BaseResultMap">
+      select
+      <include refid="Column_List" />
+      from sys_user_organization uo
+      left join sys_user u on uo.sys_user_id = u.id
+      left join sys_organization o on uo.organization_id = o.id
+      <if test="direction == 'ASC'">
+        order by uo.create_at asc
+      </if>
+      <if test="direction != 'ASC'">
+        order by uo.create_at desc
+      </if>
+    </select>
+
+    <delete id="deleteById" parameterType="java.lang.String">
+    delete from sys_user_organization
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteBySysUserId">
+    delete from sys_user_organization
+    where sys_user_id = #{sysUserId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByOrganizationId">
+    delete from sys_user_organization
+    where organization_id = #{organizationId,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insert" keyColumn="id" keyProperty="id"
+          parameterType="com.touchspring.smartforecasting.domain.entity.sys.SysUserOrganization" >
+    insert into sys_user_organization
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="sysUserId != null">
+        sys_user_id,
+      </if>
+      <if test="organizationId != null">
+        organization_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="sysUserId != null">
+        #{sysUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="organizationId != null">
+        #{organizationId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="update" parameterType="com.touchspring.smartforecasting.domain.entity.sys.SysUserOrganization">
+    update sys_user_organization
+    <set>
+      <if test="sysUserId != null">
+        sys_user_id = #{sysUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="organizationId != null">
+        organization_id = #{organizationId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

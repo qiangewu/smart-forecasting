@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.touchspring.smartforecasting.dao.SysDictDataDao">
+  <resultMap id="BaseResultMap" type="com.touchspring.smartforecasting.domain.entity.sys.SysDictData">
+    <id column="id"  property="id" />
+    <result column="create_at"  property="createAt" />
+    <result column="update_at"  property="updateAt" />
+<!--    <result column="create_user_id" jdbcType="VARCHAR" property="createUserId" />-->
+<!--    <result column="update_user_id" jdbcType="VARCHAR" property="updateUserId" />-->
+    <result column="code"  property="code" />
+    <result column="name"  property="name" />
+    <result column="detail"  property="detail" />
+    <result column="sys_dict_id"  property="sysDictId" />
+    <result column="is_deleted"  property="isDeleted" />
+    <result column="sort"  property="sort" />
+
+    <association property="sysDict" javaType="com.touchspring.smartforecasting.domain.entity.sys.SysDict">
+      <id column="d_id" property="id"/>
+      <result column="d_code" property="code"/>
+      <result column="d_name" property="name"/>
+      <result column="d_is_active" property="isActive"/>
+      <result column="d_remark" property="remark"/>
+      <result column="d_create_at" property="createAt"/>
+      <result column="d_update_at" property="updateAt"/>
+      <result column="d_is_deleted" property="isDeleted"/>
+    </association>
+
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, create_at, update_at, create_user_id, update_user_id, code, name, detail, sys_dict_id,
+    is_deleted, sort
+  </sql>
+
+  <sql id="Base_Column_With_Dict_List">
+    dd.id as id,
+    dd.create_at as create_at,
+    dd.update_at as update_at,
+    dd.create_user_id as create_user_id,
+    dd.update_user_id as update_user_id,
+    dd.code as code,
+    dd.name as "name",
+    dd.detail as detail,
+    dd.sys_dict_id as sys_dict_id,
+    dd.is_deleted as is_deleted,
+    dd.sort as sort,
+    d.id as d_id,
+    d.create_at as d_create_at,
+    d.update_at as d_update_at,
+    d.create_user_id as d_create_user_id,
+    d.update_user_id as d_update_user_id,
+    d.name as d_name,
+    d.remark as d_remark,
+    d.code as d_code,
+    d.is_deleted as d_is_deleted,
+    d.is_active as d_is_active
+  </sql>
+
+  <select id="findById" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_With_Dict_List" />
+    from sys_dict_data dd left join sys_dict d on dd.sys_dict_id = d.id
+    where dd.id = #{id,jdbcType=VARCHAR} and dd.is_deleted = 0
+  </select>
+
+  <select id="findBySysDictIdOrderBySortAsc"
+          resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_With_Dict_List" />
+    from sys_dict_data dd left join sys_dict d on dd.sys_dict_id = d.id
+    where dd.sysDictId = #{sysDictId,jdbcType=VARCHAR} and dd.is_deleted = 0
+    order by dd.sort asc
+  </select>
+
+
+  <select id="selectPage" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_With_Dict_List" />
+    from sys_dict_data dd left join sys_dict d on dd.sys_dict_id = d.id
+    where dd.is_deleted = 0
+    <if test="direction == 'ASC'">
+      order by dd.sort asc
+    </if>
+    <if test="direction != 'ASC'">
+      order by dd.sort desc
+    </if>
+  </select>
+  <update id="deleteById" parameterType="java.lang.String">
+    update sys_dict_data set is_deleted = 1
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <insert id="insert" keyColumn="id" keyProperty="id"
+          parameterType="com.touchspring.smartforecasting.domain.entity.sys.SysDictData" >
+    insert into sys_dict_data
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="createAt != null">
+        create_at,
+      </if>
+      <if test="updateAt != null">
+        update_at,
+      </if>
+<!--      <if test="createUserId != null">-->
+<!--        create_user_id,-->
+<!--      </if>-->
+<!--      <if test="updateUserId != null">-->
+<!--        update_user_id,-->
+<!--      </if>-->
+      <if test="code != null">
+        code,
+      </if>
+      <if test="name != null">
+        "name",
+      </if>
+      <if test="detail != null">
+        detail,
+      </if>
+      <if test="sysDictId != null">
+        sys_dict_id,
+      </if>
+      <if test="isDeleted != null">
+        is_deleted,
+      </if>
+      <if test="sort != null">
+        sort,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id},
+      </if>
+      <if test="createAt != null">
+        #{createAt},
+      </if>
+      <if test="updateAt != null">
+        #{updateAt},
+      </if>
+<!--      <if test="createUserId != null">-->
+<!--        #{createUserId,jdbcType=VARCHAR},-->
+<!--      </if>-->
+<!--      <if test="updateUserId != null">-->
+<!--        #{updateUserId,jdbcType=VARCHAR},-->
+<!--      </if>-->
+      <if test="code != null">
+        #{code},
+      </if>
+      <if test="name != null">
+        #{name},
+      </if>
+      <if test="detail != null">
+        #{detail},
+      </if>
+      <if test="sysDictId != null">
+        #{sysDictId},
+      </if>
+      <if test="isDeleted != null">
+        #{isDeleted},
+      </if>
+      <if test="sort != null">
+        #{sort},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="update" parameterType="com.touchspring.smartforecasting.domain.entity.sys.SysDictData">
+    update sys_dict_data
+    <set>
+      <if test="createAt != null">
+        create_at = #{createAt},
+      </if>
+      <if test="updateAt != null">
+        update_at = #{updateAt},
+      </if>
+<!--      <if test="createUserId != null">-->
+<!--        create_user_id = #{createUserId},-->
+<!--      </if>-->
+<!--      <if test="updateUserId != null">-->
+<!--        update_user_id = #{updateUserId},-->
+<!--      </if>-->
+      <if test="code != null">
+        code = #{code},
+      </if>
+      <if test="name != null">
+        "name" = #{name},
+      </if>
+      <if test="detail != null">
+        detail = #{detail},
+      </if>
+      <if test="sysDictId != null">
+        sys_dict_id = #{sysDictId},
+      </if>
+      <if test="isDeleted != null">
+        is_deleted = #{isDeleted},
+      </if>
+      <if test="sort != null">
+        sort = #{sort},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

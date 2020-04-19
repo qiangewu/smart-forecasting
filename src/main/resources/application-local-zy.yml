@@ -1,0 +1,30 @@
+spring:
+  datasource:
+    url: jdbc:oracle:thin:@//localhost:1521/XE
+    username: SMART_FORECASTING
+    password: 123
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: oracle.jdbc.OracleDriver
+    initialSize: 5
+    minIdle: 5
+    maxActive: 20
+    maxWait: 300000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 1 FROM DUAL
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    maxPoolPreparedStatementPerConnectionSize: 20
+    filters: stat
+    connectionProperties: drui.stat.mdergeSql=true;druid.stat.slowSqlMillis=5000
+mybatis:
+  mapperLocations: classpath:dao/*.xml
+  typeAliasesPackage: com.touchspring.smartforecasting.dao
+pagehelper:
+  helperDialect: oracle
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
+

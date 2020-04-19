@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.touchspring.smartforecasting.dao.SysMenuDao">
+  <resultMap id="BaseResultMap" type="com.touchspring.smartforecasting.domain.entity.sys.SysMenu">
+    <id column="id" property="id" />
+    <result column="create_at" property="createAt" />
+    <result column="update_at" property="updateAt" />
+<!--    <result column="create_user_id" jdbcType="VARCHAR" property="createUserId" />-->
+<!--    <result column="update_user_id" jdbcType="VARCHAR" property="updateUserId" />-->
+    <result column="name" property="name" />
+    <result column="application_id" property="applicationId" />
+    <result column="parent_id" property="parentId" />
+    <result column="path" property="path" />
+    <result column="icon" property="icon" />
+    <result column="is_deleted" property="isDeleted" />
+    <result column="sort" property="sort" />
+    <result column="is_active" property="isActive" />
+    <result column="type" property="type" />
+    <result column="code" property="code" />
+
+<!--    子菜单-->
+    <collection property="children"
+                ofType="com.touchspring.smartforecasting.domain.entity.sys.SysMenu">
+      <id column="children_id" property="id" />
+      <result column="children_create_at" property="createAt" />
+      <result column="children_update_at" property="updateAt" />
+      <!--    <result column="create_user_id" jdbcType="VARCHAR" property="createUserId" />-->
+      <!--    <result column="update_user_id" jdbcType="VARCHAR" property="updateUserId" />-->
+      <result column="children_name" property="name" />
+      <result column="children_application_id" property="applicationId" />
+      <result column="children_parent_id" property="parentId" />
+      <result column="children_path" property="path" />
+      <result column="children_icon" property="icon" />
+      <result column="children_is_deleted" property="isDeleted" />
+      <result column="children_sort" property="sort" />
+      <result column="children_is_active" property="isActive" />
+      <result column="children_type" property="type" />
+      <result column="children_code" property="code" />
+
+    </collection>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, create_at, update_at, create_user_id, update_user_id, "name", application_id,
+    parent_id, "path", icon, is_deleted, sort, is_active, "type", code
+  </sql>
+
+  <sql id="Column_List_With_Children">
+    m.id as id,
+    m.create_at as create_at,
+    m.update_at as update_at,
+    m.create_user_id as create_user_id,
+    m.update_user_id as update_user_id,
+    m.name as "name",
+    m.application_id as application_id,
+    m.parent_id as parent_id,
+    m.path as "path",
+    m.icon as icon,
+    m.is_deleted as is_deleted,
+    m.sort as sort,
+    m.is_active as is_active,
+    m.type as type,
+    m.code as code,
+    ch.id as children_id,
+    ch.create_at as children_create_at,
+    ch.update_at as children_update_at,
+    ch.create_user_id as children_create_user_id,
+    ch.update_user_id as children_update_user_id,
+    ch.name as children_name,
+    ch.application_id as children_application_id,
+    ch.parent_id as children_parent_id,
+    ch.path as children_path,
+    ch.icon as children_icon,
+    ch.is_deleted as children_is_deleted,
+    ch.sort as children_sort,
+    ch.is_active as children_is_active,
+    ch.type as children_type,
+    ch.code as children_code
+  </sql>
+
+  <select id="findById" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Column_List_With_Children" />
+    from sys_menu m left join sys_menu ch on m.id = ch.parent_id
+    where m.id = #{id,jdbcType=VARCHAR} and m.is_deleted = 0
+  </select>
+
+  <select id="findByName" resultMap="BaseResultMap">
+    select
+    <include refid="Column_List_With_Children" />
+    from sys_menu m left join sys_menu ch on m.id = ch.parent_id
+    where m.path = #{path,jdbcType=VARCHAR} and m.is_deleted = 0
+  </select>
+
+  <select id="findByPath" resultMap="BaseResultMap">
+    select
+    <include refid="Column_List_With_Children" />
+    from sys_menu m left join sys_menu ch on m.id = ch.parent_id
+    where m.name = #{id,jdbcType=VARCHAR} and m.is_deleted = 0
+  </select>
+
+  <select id="findByParentId" resultMap="BaseResultMap">
+    select
+    <include refid="Column_List_With_Children" />
+    from sys_menu m left join sys_menu ch on m.id = ch.parent_id
+    where m.parent_id = #{parentId,jdbcType=VARCHAR} and m.is_deleted = 0
+  </select>
+
+  <select id="findAll" resultMap="BaseResultMap">
+    select
+    <include refid="Column_List_With_Children" />
+    from sys_menu m left join sys_menu ch on m.id = ch.parent_id
+    where m.is_deleted = 0
+  </select>
+  <select id="findAllByDirection" resultMap="BaseResultMap">
+    select
+    <include refid="Column_List_With_Children" />
+    from sys_menu m left join sys_menu ch on m.id = ch.parent_id
+    where m.is_deleted = 0
+    <if test="direction == 'ASC'">
+      order by sort asc
+    </if>
+    <if test="direction != 'ASC'">
+      order by sort desc
+    </if>
+  </select>
+
+  <update id="deleteById" parameterType="java.lang.String">
+    update sys_menu set is_deleted = 1
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <insert id="insert" keyColumn="id" keyProperty="id"
+          parameterType="com.touchspring.smartforecasting.domain.entity.sys.SysMenu" >
+    insert into sys_menu
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="createAt != null">
+        create_at,
+      </if>
+      <if test="updateAt != null">
+        update_at,
+      </if>
+      <if test="createUserId != null">
+        create_user_id,
+      </if>
+      <if test="updateUserId != null">
+        update_user_id,
+      </if>
+      <if test="name != null">
+        "name",
+      </if>
+      <if test="applicationId != null">
+        application_id,
+      </if>
+      <if test="parentId != null">
+        parent_id,
+      </if>
+      <if test="path != null">
+        "path",
+      </if>
+      <if test="icon != null">
+        icon,
+      </if>
+      <if test="isDeleted != null">
+        is_deleted,
+      </if>
+      <if test="sort != null">
+        sort,
+      </if>
+      <if test="isActive != null">
+        is_active,
+      </if>
+      <if test="type != null">
+        "type",
+      </if>
+      <if test="code != null">
+        code,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id},
+      </if>
+      <if test="createAt != null">
+        #{createAt},
+      </if>
+      <if test="updateAt != null">
+        #{updateAt},
+      </if>
+      <if test="createUserId != null">
+        #{createUserId},
+      </if>
+      <if test="updateUserId != null">
+        #{updateUserId},
+      </if>
+      <if test="name != null">
+        #{name},
+      </if>
+      <if test="applicationId != null">
+        #{applicationId},
+      </if>
+      <if test="parentId != null">
+        #{parentId},
+      </if>
+      <if test="path != null">
+        #{path},
+      </if>
+      <if test="icon != null">
+        #{icon},
+      </if>
+      <if test="isDeleted != null">
+        #{isDeleted},
+      </if>
+      <if test="sort != null">
+        #{sort},
+      </if>
+      <if test="isActive != null">
+        #{isActive},
+      </if>
+      <if test="type != null">
+        #{type},
+      </if>
+      <if test="code != null">
+        #{code},
+      </if>
+    </trim>
+  </insert>
+  <update id="update" parameterType="com.touchspring.smartforecasting.domain.entity.sys.SysMenu">
+    update sys_menu
+    <set>
+      <if test="createAt != null">
+        create_at = #{createAt},
+      </if>
+      <if test="updateAt != null">
+        update_at = #{updateAt},
+      </if>
+      <if test="createUserId != null">
+        create_user_id = #{createUserId},
+      </if>
+      <if test="updateUserId != null">
+        update_user_id = #{updateUserId},
+      </if>
+      <if test="name != null">
+        "name" = #{name},
+      </if>
+      <if test="applicationId != null">
+        application_id = #{applicationId},
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId},
+      </if>
+      <if test="path != null">
+        "path" = #{path},
+      </if>
+      <if test="icon != null">
+        icon = #{icon},
+      </if>
+      <if test="isDeleted != null">
+        is_deleted = #{isDeleted},
+      </if>
+      <if test="sort != null">
+        sort = #{sort},
+      </if>
+      <if test="isActive != null">
+        is_active = #{isActive},
+      </if>
+      <if test="type != null">
+        "type" = #{type},
+      </if>
+      <if test="code != null">
+        code = #{code},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

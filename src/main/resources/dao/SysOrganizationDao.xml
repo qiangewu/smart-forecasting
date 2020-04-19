@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.touchspring.smartforecasting.dao.SysOrganizationDao">
+  <resultMap id="BaseResultMap" type="com.touchspring.smartforecasting.domain.entity.sys.SysOrganization">
+    <id column="id" property="id" />
+    <result column="create_at" property="createAt" />
+    <result column="update_at" property="updateAt" />
+<!--    <result column="create_user_id" jdbcType="VARCHAR" property="createUserId" />-->
+<!--    <result column="update_user_id" jdbcType="VARCHAR" property="updateUserId" />-->
+    <result column="name" property="name" />
+    <result column="is_deleted" property="isDeleted" />
+    <result column="parent_id" property="parentId" />
+    <result column="code" property="code" />
+    <result column="path" property="path" />
+
+    <association property="createUser" javaType="com.touchspring.smartforecasting.domain.entity.sys.SysUser">
+      <id column="create_id" property="id" />
+      <result column="create_login_name" property="loginName" />
+      <result column="create_user_name" property="userName" />
+      <result column="create_create_at" property="createAt" />
+      <result column="create_update_at" property="updateAt" />
+      <!--    <result column="create_create_user_id" jdbcType="VARCHAR" property="createUserId" />-->
+      <!--    <result column="create_update_user_id" jdbcType="VARCHAR" property="updateUserId" />-->
+      <result column="create_is_active" property="isActive" />
+      <result column="create_is_deleted" property="isDeleted" />
+      <result column="create_email" property="email" />
+      <result column="create_language" property="language" />
+      <result column="create_password" property="password" />
+      <result column="create_user_no" property="userNo" />
+      <result column="create_sex" property="sex" />
+    </association>
+
+    <association property="updateUser" javaType="com.touchspring.smartforecasting.domain.entity.sys.SysUser">
+      <id column="update_id" property="id" />
+      <result column="update_login_name" property="loginName" />
+      <result column="update_user_name" property="userName" />
+      <result column="update_create_at" property="createAt" />
+      <result column="update_update_at" property="updateAt" />
+      <!--    <result column="update_create_user_id" jdbcType="VARCHAR" property="createUserId" />-->
+      <!--    <result column="update_update_user_id" jdbcType="VARCHAR" property="updateUserId" />-->
+      <result column="update_is_active" property="isActive" />
+      <result column="update_is_deleted" property="isDeleted" />
+      <result column="update_email" property="email" />
+      <result column="update_language" property="language" />
+      <result column="update_password" property="password" />
+      <result column="update_user_no" property="userNo" />
+      <result column="update_sex" property="sex" />
+    </association>
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, create_at, update_at, create_user_id, update_user_id, "name", is_deleted, parent_id,
+    code, "path"
+  </sql>
+
+  <sql id="Column_With_User_List">
+    o.id as id,
+    o.create_at as create_at,
+    o.update_at as update_at,
+    o.create_user_id as create_user_id,
+    o.update_user_id as update_user_id,
+    o.name as "name",
+    o.is_deleted as is_deleted,
+    o.parent_id as parent_id,
+    o.code as code,
+    o.path as path,
+    cr.id as create_id,
+    cr.login_name as create_login_name,
+    cr.user_name as create_user_name,
+    cr.create_at as create_create_at,
+    cr.update_at as create_update_at,
+    cr.is_active as create_is_active,
+    cr.is_deleted as create_is_deleted,
+    cr.email as create_email,
+    cr.language as create_language,
+    cr.password as create_password,
+    cr.user_no as create_user_no,
+    cr.sex as create_sex,
+    up.id as update_id,
+    up.login_name as update_login_name,
+    up.user_name as update_user_name,
+    up.create_at as update_create_at,
+    up.update_at as update_update_at,
+    up.is_active as update_is_active,
+    up.is_deleted as update_is_deleted,
+    up.email as update_email,
+    up.language as update_language,
+    up.password as update_password,
+    up.user_no as update_user_no,
+    up.sex as update_sex
+  </sql>
+
+  <select id="findById" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Column_With_User_List" />
+    from sys_organization o
+    left join sys_user cr on o.create_user_id = cr.id
+    left join sys_user up on o.update_user_id = up.id
+    where o.id = #{id,jdbcType=VARCHAR} and o.is_deleted = 0
+  </select>
+
+  <select id="findAll" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Column_With_User_List" />
+    from sys_organization o
+    left join sys_user cr on o.create_user_id = cr.id
+    left join sys_user up on o.update_user_id = up.id
+    where o.is_deleted = 0
+  </select>
+  <select id="selectPage" resultMap="BaseResultMap">
+    select
+    <include refid="Column_With_User_List" />
+    from sys_organization o
+    left join sys_user cr on o.create_user_id = cr.id
+    left join sys_user up on o.update_user_id = up.id
+    where o.is_deleted = 0
+    <if test="direction == 'ASC'">
+      order by o.create_at asc
+    </if>
+    <if test="direction != 'ASC'">
+      order by o.create_at desc
+    </if>
+  </select>
+
+  <update id="deleteById" parameterType="java.lang.String">
+    update sys_organization set is_deleted = 1
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <insert id="insert" keyColumn="id" keyProperty="id" 
+          parameterType="com.touchspring.smartforecasting.domain.entity.sys.SysOrganization" >
+    insert into sys_organization
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="createAt != null">
+        create_at,
+      </if>
+      <if test="updateAt != null">
+        update_at,
+      </if>
+      <if test="createUserId != null">
+        create_user_id,
+      </if>
+      <if test="updateUserId != null">
+        update_user_id,
+      </if>
+      <if test="name != null">
+        "name",
+      </if>
+      <if test="isDeleted != null">
+        is_deleted,
+      </if>
+      <if test="parentId != null">
+        parent_id,
+      </if>
+      <if test="code != null">
+        code,
+      </if>
+      <if test="path != null">
+        "path",
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id},
+      </if>
+      <if test="createAt != null">
+        #{createAt},
+      </if>
+      <if test="updateAt != null">
+        #{updateAt},
+      </if>
+      <if test="createUserId != null">
+        #{createUserId},
+      </if>
+      <if test="updateUserId != null">
+        #{updateUserId},
+      </if>
+      <if test="name != null">
+        #{name},
+      </if>
+      <if test="isDeleted != null">
+        #{isDeleted},
+      </if>
+      <if test="parentId != null">
+        #{parentId},
+      </if>
+      <if test="code != null">
+        #{code},
+      </if>
+      <if test="path != null">
+        #{path},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="update" parameterType="com.touchspring.smartforecasting.domain.entity.sys.SysOrganization">
+    update sys_organization
+    <set>
+      <if test="createAt != null">
+        create_at = #{createAt},
+      </if>
+      <if test="updateAt != null">
+        update_at = #{updateAt},
+      </if>
+      <if test="createUserId != null">
+        create_user_id = #{createUserId},
+      </if>
+      <if test="updateUserId != null">
+        update_user_id = #{updateUserId},
+      </if>
+      <if test="name != null">
+        "name" = #{name},
+      </if>
+      <if test="isDeleted != null">
+        is_deleted = #{isDeleted},
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId},
+      </if>
+      <if test="code != null">
+        code = #{code},
+      </if>
+      <if test="path != null">
+        "path" = #{path},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

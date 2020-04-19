@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.touchspring.smartforecasting.dao.SysCodingRuleDao">
+  <resultMap id="BaseResultMap" type="com.touchspring.smartforecasting.domain.entity.sys.SysCodingRule">
+    <id column="id"  property="id" />
+    <result column="create_at"  property="createAt" />
+    <result column="update_at"  property="updateAt" />
+<!--    <result column="create_user_id" jdbcType="VARCHAR" property="createUserId" />-->
+<!--    <result column="update_user_id" jdbcType="VARCHAR" property="updateUserId" />-->
+    <result column="code"  property="code" />
+    <result column="name"  property="name" />
+    <result column="review"  property="review" />
+    <result column="is_deleted"  property="isDeleted" />
+
+    <collection property="details"
+                ofType="com.touchspring.smartforecasting.domain.entity.sys.SysCodingRuleDetail">
+      <id column="crd_id" property="id"/>
+      <result column="crd_create_at" property="createAt"/>
+      <result column="crd_update_at" property="updateAt"/>
+      <!--        <result column="create_user_id"  property="createUserId" />-->
+      <!--        <result column="update_user_id"  property="updateUserId" />-->
+      <result column="crd_type" property="type"/>
+      <result column="crd_node" property="node"/>
+      <result column="crd_review" property="review"/>
+      <result column="crd_sys_coding_rule_id" property="sysCodingRuleId"/>
+      <result column="crd_cycle" property="cycle"/>
+      <result column="crd_current_value" property="currentValue"/>
+      <result column="crd_step" property="step"/>
+      <result column="crd_is_deleted" property="isDeleted"/>
+      <result column="crd_length" property="length"/>
+      <result column="crd_sort" property="sort"/>
+
+    </collection>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, create_at, update_at, create_user_id, update_user_id, code, name, review, is_deleted
+  </sql>
+
+  <sql id="Base_Column_With_Detail_List">
+        cr.id as id,
+        cr.create_at as create_at,
+        cr.update_at as update_at,
+        cr.create_user_id as create_user_id,
+        cr.update_user_id as update_user_id,
+        cr.code as code,
+        cr.name as "name",
+        cr.review as review,
+        cr.is_deleted as is_deleted,
+        crd.id as crd_id,
+        crd.create_at as crd_create_at,
+        crd.update_at as crd_update_at,
+        crd.create_user_id as crd_create_user_id,
+        crd.update_user_id as crd_update_user_id,
+        crd.type as crd_type,
+        crd.node as crd_node,
+        crd.review as crd_review,
+        crd.sys_coding_rule_id as crd_sys_coding_rule_id,
+        crd.cycle as crd_cycle,
+        crd.current_value as crd_current_value,
+        crd.step as crd_step,
+        crd.is_deleted as crd_is_deleted,
+        crd.length as crd_length,
+        crd.sort as crd_sort
+    </sql>
+
+  <select id="findById" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_With_Detail_List" />
+    from sys_coding_rule cr left join sys_coding_rule_detail crd on crd.sys_coding_rule_id = cr.id
+    where cr.code = #{code} and cr.is_deleted = 0
+  </select>
+
+  <select id="findByCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_With_Detail_List" />
+    from sys_coding_rule cr left join sys_coding_rule_detail crd on crd.sys_coding_rule_id = cr.id
+    where cr.id = #{id,jdbcType=VARCHAR} and cr.is_deleted = 0
+  </select>
+
+
+  <select id="selectPage" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_With_Detail_List" />
+    from sys_coding_rule cr left join sys_coding_rule_detail crd on crd.sys_coding_rule_id = cr.id
+    where cr.is_deleted = 0
+    <if test="direction == 'ASC'">
+      order by cr.create_at asc
+    </if>
+    <if test="direction != 'ASC'">
+      order by cr.create_at desc
+    </if>
+  </select>
+
+  <update id="deleteById" parameterType="java.lang.String">
+    update sys_coding_rule set is_deleted = 1
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <insert id="insert" keyColumn="id" keyProperty="id"
+          parameterType="com.touchspring.smartforecasting.domain.entity.sys.SysCodingRule" >
+    insert into sys_coding_rule
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="createAt != null">
+        create_at,
+      </if>
+      <if test="updateAt != null">
+        update_at,
+      </if>
+<!--      <if test="createUserId != null">-->
+<!--        create_user_id,-->
+<!--      </if>-->
+<!--      <if test="updateUserId != null">-->
+<!--        update_user_id,-->
+<!--      </if>-->
+      <if test="code != null">
+        code,
+      </if>
+      <if test="name != null">
+        "name",
+      </if>
+      <if test="review != null">
+        review,
+      </if>
+      <if test="isDeleted != null">
+        is_deleted,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id},
+      </if>
+      <if test="createAt != null">
+        #{createAt},
+      </if>
+      <if test="updateAt != null">
+        #{updateAt},
+      </if>
+<!--      <if test="createUserId != null">-->
+<!--        #{createUserId,jdbcType=VARCHAR},-->
+<!--      </if>-->
+<!--      <if test="updateUserId != null">-->
+<!--        #{updateUserId,jdbcType=VARCHAR},-->
+<!--      </if>-->
+      <if test="code != null">
+        #{code},
+      </if>
+      <if test="name != null">
+        #{name},
+      </if>
+      <if test="review != null">
+        #{review},
+      </if>
+      <if test="isDeleted != null">
+        #{isDeleted},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="update" parameterType="com.touchspring.smartforecasting.domain.entity.sys.SysCodingRuleDetail">
+    update sys_coding_rule
+    <set>
+      <if test="createAt != null">
+        create_at = #{createAt},
+      </if>
+      <if test="updateAt != null">
+        update_at = #{updateAt},
+      </if>
+<!--      <if test="createUserId != null">-->
+<!--        create_user_id = #{createUserId,jdbcType=VARCHAR},-->
+<!--      </if>-->
+<!--      <if test="updateUserId != null">-->
+<!--        update_user_id = #{updateUserId,jdbcType=VARCHAR},-->
+<!--      </if>-->
+      <if test="code != null">
+        code = #{code},
+      </if>
+      <if test="name != null">
+        "name" = #{name},
+      </if>
+      <if test="review != null">
+        review = #{review},
+      </if>
+      <if test="isDeleted != null">
+        is_deleted = #{isDeleted},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+</mapper>
