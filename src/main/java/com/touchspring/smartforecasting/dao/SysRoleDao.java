@@ -18,7 +18,7 @@ import java.util.List;
 
 @Mapper
 @Component
-public interface SysRoleDao extends BaseMapper<SysRole>,JpaRepository<SysRole, String>, JpaSpecificationExecutor<SysRole> {
+public interface SysRoleDao extends BaseMapper<SysRole> {
     List<SysRole> findByName(@Param("name") String name);
 
     List<SysRole> selectPage(@Param("direction") String direction);

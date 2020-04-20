@@ -57,10 +57,10 @@ public class SysOrganizationService implements BaseService<SysOrganization>, Pag
     public List<String> findChildrenIdsById(String organizationId) {
         List<String> targetOrganizationIds;
         if (StringUtils.isNotBlank(organizationId)) {
-            Optional<SysOrganization> organizationOptional = sysOrganizationDao.findById(organizationId);
-            if (organizationOptional!=null) {
+            SysOrganization organization = sysOrganizationDao.findById(organizationId);
+            if (organization!=null) {
                 List<SysOrganization> sysOrganizations = sysOrganizationDao.findAll();
-                targetOrganizationIds = this.findChildren(sysOrganizations, organizationOptional).stream().map(BaseIdEntity::getId).collect(Collectors.toList());
+                targetOrganizationIds = this.findChildren(sysOrganizations, organization).stream().map(BaseIdEntity::getId).collect(Collectors.toList());
             } else {
                 targetOrganizationIds = new ArrayList<>();
             }

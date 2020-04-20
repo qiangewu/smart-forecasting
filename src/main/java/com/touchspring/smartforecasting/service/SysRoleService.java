@@ -5,6 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.touchspring.smartforecasting.dao.SysRoleDao;
 import com.touchspring.smartforecasting.domain.entity.sys.SysRole;
 import com.touchspring.smartforecasting.service.base.BaseService;
+import com.touchspring.smartforecasting.service.base.EntityInitService;
 import com.touchspring.smartforecasting.service.base.PageHelperService;
 import com.touchspring.smartforecasting.utils.IdWorker;
 import com.touchspring.smartforecasting.utils.PageRequestOfMybatis;
@@ -18,7 +19,7 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class SysRoleService implements BaseService<SysRole>, PageHelperService{
+public class SysRoleService extends EntityInitService<SysRole> implements BaseService<SysRole>, PageHelperService{
     @Autowired
     private SysRoleDao sysRoleDao;
 
@@ -26,9 +27,10 @@ public class SysRoleService implements BaseService<SysRole>, PageHelperService{
     public int save(SysRole sysRole) {
         int num;
         if(sysRole.getId() == null){
-            sysRole.setId(IdWorker.nextId());
+            preInsert(sysRole);
             num = sysRoleDao.insert(sysRole);
         }else {
+            preUpdate(sysRole);
             num = sysRoleDao.update(sysRole);
         }
         return num;

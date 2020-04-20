@@ -18,7 +18,7 @@ import java.util.List;
 
 @Mapper
 @Component
-public interface SysI18NDetailDao extends BaseMapper<SysI18NDetail>,JpaRepository<SysI18NDetailDao, String>, JpaSpecificationExecutor<SysI18NDetailDao> {
+public interface SysI18NDetailDao extends BaseMapper<SysI18NDetail>{
     List<SysI18NDetail> findByI18nCode(@Param("i18n_code") String i18nCode);
 
     void deleteByI18nCode(@Param("i18nCode") String i18nCode);

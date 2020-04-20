@@ -77,11 +77,10 @@ public class RoleController {
      */
     @GetMapping("roles/{id}")
     public ResultData findRoleById(@PathVariable("id") String id) {
-        Optional<SysRole> roleOptional = sysRoleDao.findById(id);
-        if (roleOptional==null) {
+        SysRole role = sysRoleDao.findById(id);
+        if (role==null) {
             return ResultData.notFound();
         }
-        SysRole role = roleOptional.get();
         List<SysRoleMenu> menus = sysRoleMenuDao.findByRoleId(role.getId());
         return ResultData.ok().putDataValue("role", role).putDataValue("menus", menus);
     }
