@@ -3,9 +3,11 @@ package com.touchspring.smartforecasting.service;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.touchspring.smartforecasting.dao.SysUserDao;
+import com.touchspring.smartforecasting.domain.entity.sys.SysCodingRule;
 import com.touchspring.smartforecasting.domain.entity.sys.SysUser;
 import com.touchspring.smartforecasting.repository.sys.SysUserRepository;
 import com.touchspring.smartforecasting.service.base.BaseService;
+import com.touchspring.smartforecasting.service.base.EntityInitService;
 import com.touchspring.smartforecasting.service.base.PageHelperService;
 import com.touchspring.smartforecasting.utils.IdWorker;
 import com.touchspring.smartforecasting.utils.PageRequestOfMybatis;
@@ -18,7 +20,7 @@ import java.util.List;
 
 
 @Service
-public class SysUserService implements BaseService<SysUser>, PageHelperService {
+public class SysUserService extends EntityInitService<SysUser> implements BaseService<SysUser>, PageHelperService {
 
     @Autowired
     private SysUserRepository sysUserRepository;
@@ -54,9 +56,10 @@ public class SysUserService implements BaseService<SysUser>, PageHelperService {
     public int save(SysUser sysUser) {
         int num;
         if(sysUser.getId() == null){
-            sysUser.setId(IdWorker.nextId());
+            preInsert(sysUser);
             num = sysUserDao.insert(sysUser);
         }else {
+            preUpdate(sysUser);
             num = sysUserDao.update(sysUser);
         }
         return num;

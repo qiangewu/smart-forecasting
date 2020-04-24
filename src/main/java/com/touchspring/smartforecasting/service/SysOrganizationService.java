@@ -6,9 +6,11 @@ import com.touchspring.core.utils.StringUtils;
 import com.touchspring.smartforecasting.dao.SysOrganizationDao;
 import com.touchspring.smartforecasting.dao.SysUserOrganizationDao;
 import com.touchspring.smartforecasting.domain.entity.base.BaseIdEntity;
+import com.touchspring.smartforecasting.domain.entity.sys.SysCodingRule;
 import com.touchspring.smartforecasting.domain.entity.sys.SysOrganization;
 import com.touchspring.smartforecasting.domain.entity.sys.SysUserOrganization;
 import com.touchspring.smartforecasting.service.base.BaseService;
+import com.touchspring.smartforecasting.service.base.EntityInitService;
 import com.touchspring.smartforecasting.service.base.PageHelperService;
 import com.touchspring.smartforecasting.utils.IdWorker;
 import com.touchspring.smartforecasting.utils.PageRequestOfMybatis;
@@ -22,7 +24,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class SysOrganizationService implements BaseService<SysOrganization>, PageHelperService {
+public class SysOrganizationService extends EntityInitService<SysOrganization> implements BaseService<SysOrganization>, PageHelperService {
 
     @Autowired
     private SysOrganizationDao sysOrganizationDao;
@@ -79,9 +81,10 @@ public class SysOrganizationService implements BaseService<SysOrganization>, Pag
     public int save(SysOrganization sysOrganization) {
         int num;
         if(sysOrganization.getId() == null){
-            sysOrganization.setId(IdWorker.nextId());
+            preInsert(sysOrganization);
             num = sysOrganizationDao.insert(sysOrganization);
         }else {
+            preUpdate(sysOrganization);
             num = sysOrganizationDao.update(sysOrganization);
         }
         return num;

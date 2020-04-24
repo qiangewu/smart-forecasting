@@ -21,6 +21,7 @@ public class SysMenuService extends EntityInitService<SysMenu> implements BaseSe
         int num;
         if(sysMenu.getId() == null){
             preInsert(sysMenu);
+            sysMenu.setSort(sysMenu.getId());
             num = sysMenuDao.insert(sysMenu);
         }else {
             preUpdate(sysMenu);

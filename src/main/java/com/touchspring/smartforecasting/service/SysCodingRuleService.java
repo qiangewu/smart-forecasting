@@ -8,6 +8,7 @@ import com.touchspring.smartforecasting.domain.entity.sys.SysCodingRuleDetail;
 import com.touchspring.smartforecasting.repository.sys.SysCodingRuleDetailRepository;
 import com.touchspring.smartforecasting.repository.sys.SysCodingRuleRepository;
 import com.touchspring.smartforecasting.service.base.BaseService;
+import com.touchspring.smartforecasting.service.base.EntityInitService;
 import com.touchspring.smartforecasting.service.base.PageHelperService;
 import com.touchspring.smartforecasting.utils.IdWorker;
 import com.touchspring.smartforecasting.utils.PageRequestOfMybatis;
@@ -27,7 +28,7 @@ import java.util.Optional;
 
 @Service
 @Slf4j
-public class SysCodingRuleService implements BaseService<SysCodingRule>, PageHelperService {
+public class SysCodingRuleService extends EntityInitService<SysCodingRule> implements BaseService<SysCodingRule>, PageHelperService {
     @Autowired
     private SysCodingRuleRepository sysCodingRuleRepository;
     @Autowired
@@ -116,9 +117,10 @@ public class SysCodingRuleService implements BaseService<SysCodingRule>, PageHel
     public int save(SysCodingRule sysCodingRule) {
         int num;
         if(sysCodingRule.getId()==null){
-            sysCodingRule.setId(IdWorker.nextId());
+            preInsert(sysCodingRule);
             num = sysCodingRuleDao.insert(sysCodingRule);
         }else {
+            preUpdate(sysCodingRule);
             num = sysCodingRuleDao.update(sysCodingRule);
         }
         return num;

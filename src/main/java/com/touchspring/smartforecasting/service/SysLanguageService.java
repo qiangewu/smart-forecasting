@@ -3,8 +3,10 @@ package com.touchspring.smartforecasting.service;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.touchspring.smartforecasting.dao.SysLanguageDao;
+import com.touchspring.smartforecasting.domain.entity.sys.SysCodingRule;
 import com.touchspring.smartforecasting.domain.entity.sys.SysLanguage;
 import com.touchspring.smartforecasting.service.base.BaseService;
+import com.touchspring.smartforecasting.service.base.EntityInitService;
 import com.touchspring.smartforecasting.service.base.PageHelperService;
 import com.touchspring.smartforecasting.utils.IdWorker;
 import com.touchspring.smartforecasting.utils.PageRequestOfMybatis;
@@ -18,7 +20,7 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class SysLanguageService implements PageHelperService, BaseService<SysLanguage> {
+public class SysLanguageService extends EntityInitService<SysLanguage> implements PageHelperService, BaseService<SysLanguage> {
     @Autowired
     private SysLanguageDao sysLanguageDao;
 
@@ -46,9 +48,10 @@ public class SysLanguageService implements PageHelperService, BaseService<SysLan
     public int save(SysLanguage sysLanguage) {
         int num;
         if(sysLanguage.getId() == null){
-            sysLanguage.setId(IdWorker.nextId());
+            preInsert(sysLanguage);
             num = sysLanguageDao.insert(sysLanguage);
         }else {
+            preUpdate(sysLanguage);
             num = sysLanguageDao.update(sysLanguage);
         }
         return num;

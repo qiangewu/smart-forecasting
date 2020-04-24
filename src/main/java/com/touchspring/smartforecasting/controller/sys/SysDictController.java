@@ -86,8 +86,7 @@ public class SysDictController {
      */
     @PostMapping("dictionary")
     public ResultData insertSysDict(@RequestBody SysDict sysDict) {
-        sysDict.setId(IdWorker.nextId());
-        sysDictDao.insert(sysDict);
+        sysDictService.save(sysDict);
         return ResultData.ok().putDataValue("sysDictionary", sysDict);
     }
 
@@ -104,7 +103,7 @@ public class SysDictController {
             return ResultData.notFound();
         }
         BeanUtils.copyProperties(sysDict, target, "id", "createAt", "updateAt", "createUserId", "updateUserId", "isDeleted");
-        sysDictDao.update(target);
+        sysDictService.save(target);
         return ResultData.ok();
     }
 

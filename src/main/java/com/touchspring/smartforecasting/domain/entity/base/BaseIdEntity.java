@@ -1,7 +1,10 @@
 package com.touchspring.smartforecasting.domain.entity.base;
 
 import com.touchspring.core.enums.SimpleStatus;
+import com.touchspring.smartforecasting.domain.entity.sys.SysUser;
 import lombok.Data;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -66,5 +69,11 @@ public abstract class BaseIdEntity {
 //    @JoinColumn(name = "update_user_id", insertable = false, updatable = false)
 //    @NotFound(action = NotFoundAction.IGNORE)
 //    private SysUser updateUser;
+
+    @Column(name = "create_user_id")
+    private String createUserId;
+
+    @Column(name = "update_user_id")
+    private String updateUserId;
 
 }

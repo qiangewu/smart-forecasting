@@ -5,8 +5,8 @@
     <id column="id" property="id" />
     <result column="create_at" property="createAt" />
     <result column="update_at" property="updateAt" />
-<!--    <result column="create_user_id" jdbcType="VARCHAR" property="createUserId" />-->
-<!--    <result column="update_user_id" jdbcType="VARCHAR" property="updateUserId" />-->
+    <result column="create_user_id" jdbcType="VARCHAR" property="createUserId" />
+    <result column="update_user_id" jdbcType="VARCHAR" property="updateUserId" />
     <result column="name" property="name" />
     <result column="application_id" property="applicationId" />
     <result column="parent_id" property="parentId" />
@@ -24,8 +24,8 @@
       <id column="children_id" property="id" />
       <result column="children_create_at" property="createAt" />
       <result column="children_update_at" property="updateAt" />
-      <!--    <result column="create_user_id" jdbcType="VARCHAR" property="createUserId" />-->
-      <!--    <result column="update_user_id" jdbcType="VARCHAR" property="updateUserId" />-->
+      <result column="create_user_id" jdbcType="VARCHAR" property="createUserId" />
+      <result column="update_user_id" jdbcType="VARCHAR" property="updateUserId" />
       <result column="children_name" property="name" />
       <result column="children_application_id" property="applicationId" />
       <result column="children_parent_id" property="parentId" />
@@ -40,8 +40,8 @@
     </collection>
   </resultMap>
   <sql id="Base_Column_List">
-    id, create_at, update_at, create_user_id, update_user_id, "name", application_id,
-    parent_id, "path", icon, is_deleted, sort, is_active, "type", code
+    id, create_at, update_at, create_user_id, update_user_id, name, application_id,
+    parent_id, path, icon, is_deleted, sort, is_active, type, code
   </sql>
 
   <sql id="Column_List_With_Children">
@@ -50,10 +50,10 @@
     m.update_at as update_at,
     m.create_user_id as create_user_id,
     m.update_user_id as update_user_id,
-    m.name as "name",
+    m.name as name,
     m.application_id as application_id,
     m.parent_id as parent_id,
-    m.path as "path",
+    m.path as path,
     m.icon as icon,
     m.is_deleted as is_deleted,
     m.sort as sort,
@@ -95,7 +95,7 @@
     select
     <include refid="Column_List_With_Children" />
     from sys_menu m left join sys_menu ch on m.id = ch.parent_id
-    where m.name = #{id,jdbcType=VARCHAR} and m.is_deleted = 0
+    where m.name = #{path,jdbcType=VARCHAR} and m.is_deleted = 0
   </select>
 
   <select id="findByParentId" resultMap="BaseResultMap">
@@ -149,7 +149,7 @@
         update_user_id,
       </if>
       <if test="name != null">
-        "name",
+        name,
       </if>
       <if test="applicationId != null">
         application_id,
@@ -158,7 +158,7 @@
         parent_id,
       </if>
       <if test="path != null">
-        "path",
+        path,
       </if>
       <if test="icon != null">
         icon,
@@ -173,7 +173,7 @@
         is_active,
       </if>
       <if test="type != null">
-        "type",
+        type,
       </if>
       <if test="code != null">
         code,
@@ -243,7 +243,7 @@
         update_user_id = #{updateUserId},
       </if>
       <if test="name != null">
-        "name" = #{name},
+        name = #{name},
       </if>
       <if test="applicationId != null">
         application_id = #{applicationId},
@@ -252,7 +252,7 @@
         parent_id = #{parentId},
       </if>
       <if test="path != null">
-        "path" = #{path},
+        path = #{path},
       </if>
       <if test="icon != null">
         icon = #{icon},
@@ -267,7 +267,7 @@
         is_active = #{isActive},
       </if>
       <if test="type != null">
-        "type" = #{type},
+        type = #{type},
       </if>
       <if test="code != null">
         code = #{code},

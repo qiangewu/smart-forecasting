@@ -5,6 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.touchspring.smartforecasting.dao.SysDictDataDao;
 import com.touchspring.smartforecasting.domain.entity.sys.SysDictData;
 import com.touchspring.smartforecasting.service.base.BaseService;
+import com.touchspring.smartforecasting.service.base.EntityInitService;
 import com.touchspring.smartforecasting.service.base.PageHelperService;
 import com.touchspring.smartforecasting.utils.IdWorker;
 import com.touchspring.smartforecasting.utils.PageRequestOfMybatis;
@@ -18,7 +19,7 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class SysDictDateService implements PageHelperService, BaseService<SysDictData> {
+public class SysDictDateService extends EntityInitService<SysDictData> implements PageHelperService, BaseService<SysDictData> {
     @Autowired
     private SysDictDataDao sysDictDataDao;
 
@@ -46,9 +47,10 @@ public class SysDictDateService implements PageHelperService, BaseService<SysDic
     public int save(SysDictData sysDictData) {
         int num;
         if(sysDictData.getId()==null){
-            sysDictData.setId(IdWorker.nextId());
+            preInsert(sysDictData);
             num = sysDictDataDao.insert(sysDictData);
         }else {
+            preUpdate(sysDictData);
             num = sysDictDataDao.update(sysDictData);
         }
         return num;

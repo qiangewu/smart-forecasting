@@ -30,10 +30,10 @@ public class SysRole extends BaseIdEntity {
     @Column(name = "is_active")
     private SimpleEnums isActive;
 
-    @Column(name = "create_user_id")
-    private String createUserId;
-
-    @Column(name = "update_user_id")
-    private String updateUserId;
+//    @Column(name = "create_user_id")
+//    private String createUserId;
+//
+//    @Column(name = "update_user_id")
+//    private String updateUserId;
 
 }

@@ -197,6 +197,5 @@ public class SysDictDataController {
         a.setSort(tempSort);
         sysDictDataRepository.save(b);
         sysDictDataRepository.save(a);
-        sysDictDataRepository.save(a);
     }
 }

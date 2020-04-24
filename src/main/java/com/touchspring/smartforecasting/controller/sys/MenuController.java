@@ -75,7 +75,6 @@ public class MenuController {
         if (path!=null&&path.size()>0) {
             return new ResultData(1400, "前端路径重复，请重新输入！");
         }
-        sysMenu.setSort(sysMenu.getId());
         sysMenuService.save(sysMenu);
         return ResultData.ok().putDataValue("menu", sysMenu);
     }

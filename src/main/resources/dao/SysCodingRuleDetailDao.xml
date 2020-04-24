@@ -31,8 +31,8 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id, create_at, update_at, create_user_id, update_user_id, "type", node, review, sys_coding_rule_id,
-        "cycle", current_value, step, is_deleted, "length", sort
+        id, create_at, update_at, create_user_id, update_user_id, type, node, review, sys_coding_rule_id,
+        cycle, current_value, step, is_deleted, length, sort
     </sql>
 
     <sql id="Base_Column_With_Rule_List">
@@ -72,7 +72,7 @@
         select
         <include refid="Base_Column_With_Rule_List" />
         from sys_coding_rule_detail crd left join sys_coding_rule cr on crd.sys_coding_rule_id = cr.id
-        where crd.sys_coding_rule_id = #{sysCodingRuleId,jdbcType=VARCHAR} and is_deleted = 0
+        where crd.sys_coding_rule_id = #{sysCodingRuleId,jdbcType=VARCHAR} and crd.is_deleted = 0
         order by crd.sort asc
     </select>
 
@@ -115,7 +115,7 @@
 <!--                update_user_id,-->
 <!--            </if>-->
             <if test="type != null">
-                "type",
+                type,
             </if>
             <if test="node != null">
                 node,
@@ -210,7 +210,7 @@
 <!--                update_user_id = #{updateUserId},-->
 <!--            </if>-->
             <if test="type != null">
-                "type" = #{type},
+                type = #{type},
             </if>
             <if test="node != null">
                 node = #{node},
